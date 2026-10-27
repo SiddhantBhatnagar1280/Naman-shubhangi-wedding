@@ -1,65 +1,19 @@
-# Naman Weds Shubhangi — interactive wedding invitation
+NAMAN WEDS SHUBHANGI — WEBSITE FILES
 
-## Included
-- Mobile-friendly invitation website
-- Engagement, Haldi, Mehndi, Sangeet and Wedding cards
-- Google Maps search links for venues
-- Countdown timer
-- Floating/fluttering decorative doodles
-- Separate music controls for welcome, engagement, Haldi, Mehndi, Sangeet and Wedding
-- Outfit selection form and RSVP fields
+Files
+- index.html: the invitation website
+- assets/: locally bundled decorative artwork cropped from the supplied invitation PDF
 
-## Preview locally
-Open `index.html` in a modern browser. Most features work immediately.
-Music is intentionally not bundled. Add MP3 files that you own or have permission to use into the `music/` folder:
-- `welcome.mp3`
-- `engagement.mp3`
-- `haldi.mp3`
-- `mehndi.mp3`
-- `sangeet.mp3`
-- `wedding.mp3`
+Images now load from the assets folder, so they do not depend on Wikimedia hotlinks or an external image server. Keep the assets folder alongside index.html when uploading to GitHub Pages.
 
-Until Google Sheets is connected, form responses are stored only in the current browser/device as a demo. They are NOT sent to you and will not be shared across guests.
+RSVP
+The final page includes an RSVP form (name, attendance, optional phone). The original invitation PDF does not list a separate RSVP contact number. Until an online backend is configured, RSVP and outfit-form submissions are stored only in the visitor's browser and are not sent to you. For collecting guest responses online, configure a Google Apps Script Web App URL in index.html and connect both forms to it.
 
-## Connect submissions to Google Sheets for free
-1. Create a new Google Sheet with columns:
-   `Submitted At, Name, Party Size, Attendance, Phone, Haldi Male, Haldi Female, Mehndi Male, Mehndi Female, Sangeet Male, Sangeet Female, Other Details`
-2. In the Sheet, open **Extensions → Apps Script**.
-3. Replace the script editor contents with:
+Music
+For function-specific music, add licensed MP3 files to a folder named music using these names: engagement.mp3, haldi.mp3, mehndi.mp3, sangeet.mp3, wedding.mp3. Browser rules require a user interaction before playback.
 
-```javascript
-const SHEET_NAME = 'Responses';
-function doPost(e) {
-  const data = JSON.parse(e.postData.contents);
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
-    || SpreadsheetApp.getActiveSpreadsheet().insertSheet(SHEET_NAME);
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(['Submitted At','Name','Party Size','Attendance','Phone',
-      'Haldi Male','Haldi Female','Mehndi Male','Mehndi Female',
-      'Sangeet Male','Sangeet Female','Other Details']);
-  }
-  sheet.appendRow([
-    new Date(), data.name || '', data.partySize || '', data.attendance || '',
-    data.phone || '', data.haldiMale || '', data.haldiFemale || '',
-    data.mehndiMale || '', data.mehndiFemale || '', data.sangeetMale || '',
-    data.sangeetFemale || '', data.otherDetails || ''
-  ]);
-  return ContentService.createTextOutput(JSON.stringify({ok:true}))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-```
-4. Save the project. Select **Deploy → New deployment → Web app**.
-5. Set **Execute as: Me**. Set access to **Anyone** if your Google account/organization allows it. Deploy, authorize it, and copy the Web app URL.
-6. In `index.html`, find `const SCRIPT_URL=""` and paste the URL between the quotation marks.
-7. Upload the updated site files to a static host such as Cloudflare Pages or GitHub Pages.
+GitHub Pages
+Upload index.html and the entire assets folder to the repository's published branch/root, commit and push the changes, then refresh the Pages website. Do not upload only the HTML file; the assets folder is required.
 
-Important: anyone with the public form URL may submit responses. Do not collect sensitive personal data. Test with a sample entry and check the Sheet before sharing the invitation widely.
-
-## Free hosting
-- Cloudflare Pages: create a project and upload/deploy these site files.
-- GitHub Pages: create a repository, upload the files and enable Pages in repository settings.
-Both are static hosting options with plan limits and terms that may change.
-
-## Details to confirm
-- The invitation versions show Sangeet at both 7 PM and 8 PM. The template currently uses 7 PM.
-- Confirm venue spelling/address and event timings before sharing publicly.
+Attribution / source note
+Decorative scene crops are derived from the wedding invitation artwork provided in this conversation, rather than remote image URLs.
